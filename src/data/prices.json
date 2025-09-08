@@ -1,0 +1,31 @@
+{
+  "valoresKit": {
+    "metroQLamina": 90,
+    "metroEixo": 60,
+    "metroSoleira": 50,
+    "metroGuias": 30,
+    "motor": {
+      "comNB":{
+      "ac200": 900,
+      "ac300": 1050,
+      "ac400": 1100,
+      "ac500": 1150,
+      "ac600": 1300, 
+      "ac1000": 2600,
+      "ac1500": 5100,
+      "ac2000": 6700,
+      },
+      "semNB": {
+        "dc200": 1900,
+        "dc300": 2250,
+        "dc500": 2900,
+        "dc800": 3635
+      }
+    }
+  },
+
+  "valoresKitInstalado": {
+    "acima10Metros": 299,
+    "abaixo10Metros": 0
+  }
+}
