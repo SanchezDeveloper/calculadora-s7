@@ -1,5 +1,5 @@
 {
-  "valoresKit": {
+  "KitSerralheiro": {
     "metroQLamina": 90,
     "metroEixo": 60,
     "metroSoleira": 50,
@@ -24,7 +24,7 @@
     }
   },
 
-  "valoresKitInstalado": {
+  "KitInstalado": {
     "acima10Metros": 299,
     "abaixo10Metros": 0
   }
