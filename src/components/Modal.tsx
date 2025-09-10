@@ -16,19 +16,17 @@ export default function Modal({ children, onClose}: ModalProps) {
   }, []);
 
   return(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="relative max-w-full max-h-full overflow-auto p-4">
-        {/* Botão Fechar */}
-        <button
-          onClick={onClose}
-          className="absolute top-10 right-16 z-[60] bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
-        >
-          Fechar
-        </button>
-        <div className="text-sm text-gray-600">
-          {children}
-        </div>
-      </div>
+    <div className="fixed inset-0 z-50 max-h-[100vh] bg-black/50 flex justify-center items-center">
+      {/* Botão Fechar */}
+      <button
+        onClick={onClose}
+        className="absolute top-10 right-16 z-[60] bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+      >
+        Fechar
+      </button>
+      
+      {children}
+      
     </div>
   )
 }

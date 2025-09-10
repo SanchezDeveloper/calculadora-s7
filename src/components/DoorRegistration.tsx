@@ -3,34 +3,34 @@ import { CalculatedDoor, DoorData } from "@/utils/types/DoorData";
 import { calculateDoorPrice } from "@/utils/CalcPrice";
 import { useState } from "react";
 
-//prop onSubmit que o componente pai passa
+// prop onSubmit que o componente pai passa
 type DoorDataProps = {
   onSubmit: (door: CalculatedDoor) => void;
 };
 
 export default function DoorRegistration({ onSubmit }: DoorDataProps) {
-  //setar altura, largura e quantidade
+  // setar altura, largura e quantidade
   const [widthDoor, setWidthDoor] = useState(0);
   const [heightDoor, setHeightDoor] = useState(0);
   const [quantityDoor, setQuantityDoor] = useState(1);
-  //setar opção com noBreak ou sem noBreak
+  // setar opção com noBreak ou sem noBreak
   const [hasUPS, setHasUPS] = useState<"comNB" | "semNB" | "" >("");
-  //setar se é kit para serralheiro ou Porta com Instalação
+  // setar se é kit para serralheiro ou Porta com Instalação
   const [productType, setProductType] = useState<"kitSerralheiro" | "kitInstalado" | "">("");
   // setar m² da porta
   const [valueM2, setValueM2] = useState(0);
 
-
-  //Calculo área
+  // Calculo área
   const area = widthDoor * heightDoor ;
 
-  //Função onSubmit
-   function handleSubmit() {
-    //condicional para não preencher errado
+  // Função onSubmit
+  function handleSubmit() {
+    // condicional para não preencher errado
     if (!hasUPS || !productType || widthDoor <= 0 || heightDoor <= 0 || quantityDoor <= 0) {
       alert("Preencha todos os campos obrigatórios!");
       return;
     }
+    // monta objeto porta para cálculo
     const door: DoorData = {
       width: widthDoor,
       height: heightDoor,
@@ -40,7 +40,9 @@ export default function DoorRegistration({ onSubmit }: DoorDataProps) {
       valueM2: productType === "kitInstalado" && area < 10 ? valueM2 : undefined,
     };
 
+    // calcula preço da porta
     const calculatedDoor = calculateDoorPrice(door);
+    // envia porta calculada para o componente pai
     onSubmit(calculatedDoor);
 
     // resetar campos
@@ -52,13 +54,11 @@ export default function DoorRegistration({ onSubmit }: DoorDataProps) {
     setValueM2(0);
   }
 
-
   return (
     <div className="bg-white p-6 rounded shadow-md max-w-md mx-auto ">
       <h2 className="text-xl font-bold mb-4 text-center">Adicionar Porta</h2>
 
       {/* escolher largura, altura e quantidade */}
-
       <label className="block mb-2">
         Largura (m):
         <input 
@@ -125,7 +125,7 @@ export default function DoorRegistration({ onSubmit }: DoorDataProps) {
         </select>
       </label>
 
-      {/*  Se o productType for "kitInstalado" e a area for < 10, mostrar um input extra para o usuário digitar o valor do m² manualmente. */}
+      {/* Se o productType for "kitInstalado" e a area for < 10, mostrar input extra para valor do m² */}
       {productType === "kitInstalado" && area < 10 && (
         <label className="block mb-2">
           <span className="text-red-600 opacity-70">Área do vão menor que 10m², digite o novo valor no m2 da porta instalada:</span>
@@ -140,14 +140,14 @@ export default function DoorRegistration({ onSubmit }: DoorDataProps) {
         </label>
       )}
 
-      {/* exibir préviamente área calculada*/}
+      {/* exibir préviamente área calculada */}
       {widthDoor > 0 && heightDoor > 0 && (
         <p className="mt-2 text-sm text-gray-600">
           Área calculada: {area.toFixed(2)} m²
         </p>
       )}
 
-      {/* botão onSubmit*/}
+      {/* botão onSubmit */}
       <button
         onClick={handleSubmit}
         className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"

@@ -6,24 +6,27 @@ import BudgetPreview from "./BudgetPreview";
 import Modal from "./Modal";
 
 export default function Calculator() {
+  // Estado para lista de portas cadastradas
   const [doors, setDoors] = useState<CalculatedDoor[]>([]);
+  // Estado para exibir ou não a prévia do orçamento
   const [showPreview, setShowPreview] = useState(false);
+  // Estado para escala da folha A4 no preview
   const [scale, setScale] = useState(1);
 
-  // Adiciona porta à lista
+  // Adiciona uma porta à lista
   function handleAddDoor(calculatedDoor: CalculatedDoor) {
     setDoors((prev) => [...prev, calculatedDoor]);
   }
 
-  // Remove porta da lista
+  // Remove uma porta da lista
   function handleRemoveDoor(index: number) {
     setDoors((prev) => prev.filter((_, i) => i !== index));
   }
 
-  // Total geral
+  // Calcula o total geral das portas
   const totalGeral = doors.reduce((acc, door) => acc + door.total, 0);
 
-  // Escala automática da folha a4
+  // Atualiza a escala da folha A4 conforme o tamanho da tela
   useEffect(() => {
     function updateScale() {
       const screenWidth = window.innerWidth * 0.9;
@@ -49,6 +52,7 @@ export default function Calculator() {
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
+      {/* Título da calculadora */}
       <h1 className="text-2xl font-bold mb-4 text-center">Calculadora de Portas</h1>
 
       {/* Formulário para adicionar porta */}
@@ -70,6 +74,7 @@ export default function Calculator() {
                   <p>Quantidade: {d.quantity}</p>
                   <p>Área: {d.area.toFixed(2)} m²</p>
                   <p>Total: R$ {d.total.toFixed(2)}</p>
+                  {/* Exibe dados extras se for kitSerralheiro */}
                   {d.productType === "kitSerralheiro" && (
                     <>
                       <p>Motor: {d.motor}</p>
@@ -78,6 +83,7 @@ export default function Calculator() {
                     </>
                   )}
                 </div>
+                {/* Botão para remover porta */}
                 <button
                   onClick={() => handleRemoveDoor(index)}
                   className="ml-4 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
@@ -88,12 +94,12 @@ export default function Calculator() {
             ))}
           </div>
 
-          {/* Total geral */}
+          {/* Exibe o total geral */}
           <div className="mt-4 p-4 border-t font-bold text-lg">
             Total geral: R$ {totalGeral.toFixed(2)}
           </div>
 
-          {/* Botão para abrir prévia */}
+          {/* Botão para abrir prévia do orçamento */}
           <div className="mt-6 text-center">
             <button
               onClick={() => setShowPreview(true)}
@@ -105,13 +111,13 @@ export default function Calculator() {
         </div>
       )}
 
-      {/* Prévia em formato A4 e em modal*/}
+      {/* Modal com prévia em formato A4 */}
       {showPreview && (
         <Modal onClose={() => setShowPreview(false)}>
           <div
             className="a4"
             style={{
-              transform: `scale(${scale})`,
+              transform: `scale(${scale})`
             }}
           >
             <BudgetPreview doors={doors} />
