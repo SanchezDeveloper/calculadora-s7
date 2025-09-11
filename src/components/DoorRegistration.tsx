@@ -56,7 +56,7 @@ export default function DoorRegistration({ onSubmit }: DoorDataProps) {
 
   return (
     <div className="bg-white p-6 rounded shadow-md max-w-md mx-auto ">
-      <h2 className="text-xl font-bold mb-4 text-center">Adicionar Porta</h2>
+      <h2 className="text-xl mb-4 font-medium">Adicionar Porta</h2>
 
       {/* escolher largura, altura e quantidade */}
       <label className="block mb-2">
