@@ -1,59 +1,63 @@
 {
   "KitSerralheiro": {
-    "metroQLamina": 85,
+    "metroQLamina": 80,
     "metroEixo": 60,
     "metroSoleira": 50,
     "metroGuias": 30,
     "motor": {
       "semNB":{
         "ac200": {
-          "price": 900,
+          "price": 770,
           "capacity": 200
         },
         "ac300": {
-          "price": 1050,
+          "price": 818,
           "capacity": 300
         },
         "ac400": {
-          "price": 1100,
+          "price": 915,
           "capacity": 400
         },
         "ac500": {
-          "price": 1150,
+          "price": 979,
           "capacity": 500 
         },
         "ac600": {
-          "price": 1300,
+          "price": 1017,
           "capacity": 600
         },
+        "ac800": {
+          "price": 1532,
+          "capacity": 800
+        },
         "ac1000": {
-          "price": 2600,
+          "price": 1924,
           "capacity": 1000
         },
         "ac1500": {
-          "price": 5100,
+          "price": 3922,
           "capacity": 1500
         },
         "ac2000": {
-          "price": 6700,
-          "capacity": 400
+          "price": 5176,
+          "capacity": 2000
         }
       },
       "comNB": {
         "dc200": {
-          "price": 1900,
+          "price": 1452,
           "capacity": 200
         },
         "dc300": {
-          "price": 2250,
+          "price": 1495,
           "capacity": 300
         },
         "dc500": {
-          "price": 2900,
+          "price": 2033,
           "capacity": 500
         },
         "dc800": {
-          "price": 3635,
+          "price": 2721,
           "capacity": 800
         }
       }

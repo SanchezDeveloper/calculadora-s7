@@ -1,3 +1,5 @@
+import { ExtraProduct } from "./ExtraProduct";
+
 export type DoorData = {
   width: number;
   height: number;
@@ -53,3 +55,10 @@ export type CalculatedDoor =
       quantity: number;
     };
 
+export type BudgetData = {
+  clientName: string;
+  date: string;
+  doors: CalculatedDoor[];
+  extraProducts: ExtraProduct[];
+  discountPercent: number;
+};

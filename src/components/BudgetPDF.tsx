@@ -1,9 +1,11 @@
 import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import { CalculatedDoor } from "@/utils/types/DoorData";
+import { ExtraProduct } from "@/utils/types/ExtraProduct";
 /* eslint-disable jsx-a11y/alt-text */
 
 interface BudgetPDFProps {
   doors: CalculatedDoor[];
+  extraProducts: ExtraProduct[];
   clientName: string;
   company: {
     name: string;
@@ -11,6 +13,8 @@ interface BudgetPDFProps {
     logo: string;
   };
   totalGeral: number;
+  totalComDesconto: number;
+  discount: number;
   dataHoje: string;
 }
 
@@ -24,7 +28,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#ff6600", // laranja
+    color: "#ff6600",
     textAlign: "center",
     marginBottom: 16,
     textTransform: "uppercase",
@@ -41,7 +45,7 @@ const styles = StyleSheet.create({
   companyName: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#000", // preto
+    color: "#000",
   },
   companyCNPJ: {
     fontSize: 10,
@@ -60,7 +64,7 @@ const styles = StyleSheet.create({
   table: {
     width: "100%",
     borderWidth: 1,
-    borderColor: "#ff6600", // borda laranja
+    borderColor: "#ff6600",
     marginTop: 12,
   },
   row: {
@@ -70,13 +74,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerRow: {
-    backgroundColor: "#ff6600", // laranja
+    backgroundColor: "#ff6600",
   },
   headerCell: {
     flex: 1,
     padding: 6,
     fontSize: 10,
-    color: "#fff", // texto branco no cabeçalho
+    color: "#fff",
     fontWeight: "bold",
   },
   cell: {
@@ -100,11 +104,30 @@ const styles = StyleSheet.create({
 
 export default function BudgetPDF({
   doors,
+  extraProducts,
   clientName,
   company,
   totalGeral,
+  totalComDesconto,
+  discount,
   dataHoje,
 }: BudgetPDFProps) {
+  // Junta portas + extras em uma lista só
+  const allItems = [
+    ...doors.map((d) => ({
+      name: d.productType,
+      quantity: d.quantity,
+      unitPrice: d.total / d.quantity,
+      total: d.total,
+    })),
+    ...extraProducts.map((p) => ({
+      name: p.name,
+      quantity: p.quantity,
+      unitPrice: p.unitPrice,
+      total: p.total,
+    })),
+  ];
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -130,7 +153,7 @@ export default function BudgetPDF({
           </Text>
         </View>
 
-        {/* Tabela de produtos */}
+        {/* Tabela única */}
         <View style={styles.table}>
           <View style={[styles.row, styles.headerRow]}>
             <Text style={styles.headerCell}>Produto</Text>
@@ -139,18 +162,26 @@ export default function BudgetPDF({
             <Text style={styles.headerCell}>Valor Total (R$)</Text>
           </View>
 
-          {doors.map((d, idx) => (
+          {allItems.map((item, idx) => (
             <View style={styles.row} key={idx}>
-              <Text style={styles.cell}>{d.productType}</Text>
-              <Text style={styles.cell}>{d.quantity}</Text>
-              <Text style={styles.cell}>{(d.total / d.quantity).toFixed(2)}</Text>
-              <Text style={styles.cell}>{d.total.toFixed(2)}</Text>
+              <Text style={styles.cell}>{item.name}</Text>
+              <Text style={styles.cell}>{item.quantity}</Text>
+              <Text style={styles.cell}>{item.unitPrice.toFixed(2)}</Text>
+              <Text style={styles.cell}>{item.total.toFixed(2)}</Text>
             </View>
           ))}
         </View>
 
-        {/* Total geral */}
-        <Text style={styles.total}>Total do Orçamento: R$ {totalGeral.toFixed(2)}</Text>
+        {/* Totais */}
+        <Text style={styles.total}>
+          Total do Orçamento: R$ {totalGeral.toFixed(2)}
+        </Text>
+
+        {discount > 0 && (
+          <Text style={styles.total}>
+            Total à vista com {discount}% de desconto: R$ {totalComDesconto.toFixed(2)}
+          </Text>
+        )}
       </Page>
     </Document>
   );

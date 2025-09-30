@@ -4,26 +4,45 @@ import { PDFViewer, pdf } from "@react-pdf/renderer";
 import Modal from "./Modal";
 import BudgetPDF from "./BudgetPDF";
 import { CalculatedDoor } from "@/utils/types/DoorData";
+import { ExtraProduct } from "@/utils/types/ExtraProduct"; 
 import company from "../data/company.json";
 
 interface BudgetPreviewProps {
   doors: CalculatedDoor[];
-  clientName: string;  // ✅ vem do Calculator
+  extraProducts: ExtraProduct[]; 
+  clientName: string;
+  discount: number; 
   open: boolean;
   onClose: () => void;
 }
 
-export default function BudgetPreview({ doors, clientName, open, onClose }: BudgetPreviewProps) {
-  const totalGeral = doors.reduce((acc, d) => acc + d.total, 0);
+export default function BudgetPreview({
+  doors,
+  extraProducts,
+  clientName,
+  discount,
+  open,
+  onClose,
+}: BudgetPreviewProps) {
+  const totalDoors = doors.reduce((acc, d) => acc + d.total, 0);
+  const totalExtras = extraProducts.reduce((acc, p) => acc + p.total, 0);
+  const totalGeral = totalDoors + totalExtras;
+
+  const descontoValor = totalGeral * (discount / 100);
+  const totalComDesconto = totalGeral - descontoValor;
+
   const dataHoje = new Date().toLocaleDateString("pt-BR");
 
   async function handleDownload() {
     const blob = await pdf(
       <BudgetPDF
         doors={doors}
+        extraProducts={extraProducts} 
         clientName={clientName}
         company={company}
         totalGeral={totalGeral}
+        totalComDesconto={totalComDesconto}
+        discount={discount} 
         dataHoje={dataHoje}
       />
     ).toBlob();
@@ -46,9 +65,12 @@ export default function BudgetPreview({ doors, clientName, open, onClose }: Budg
           <PDFViewer style={{ width: "100%", maxWidth: "850px", height: "80vh" }}>
             <BudgetPDF
               doors={doors}
-              clientName={clientName}  // ✅ aqui garante que aparece no PDF
+              extraProducts={extraProducts} 
+              clientName={clientName}
               company={company}
               totalGeral={totalGeral}
+              totalComDesconto={totalComDesconto} 
+              discount={discount}
               dataHoje={dataHoje}
             />
           </PDFViewer>
