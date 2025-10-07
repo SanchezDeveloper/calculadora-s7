@@ -7,6 +7,7 @@ export type DoorData = {
   engine: "comNB" | "semNB";
   productType: "kitSerralheiro" | "kitInstalado";
   valueM2?: number;
+  laminaTransvision?: boolean;
 };
 
 export type Motor = {
@@ -44,15 +45,20 @@ export type CalculatedDoor =
       width: number;
       height: number;
       quantity: number;
+      laminaTransvision?: boolean;
     }
   | {
       productType: "kitInstalado";
       area: number;
       pricePerM2: number;
       total: number;
+      pesoMotor: number;
+      motor: string;
+      motorPrice: number;
       width: number;
       height: number;
       quantity: number;
+      laminaTransvision?: boolean;
     };
 
 export type BudgetData = {

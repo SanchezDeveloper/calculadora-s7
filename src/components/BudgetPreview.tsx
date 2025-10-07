@@ -62,18 +62,24 @@ export default function BudgetPreview({
       <div className="flex flex-col items-center w-full max-w-full p-2">
         {/* PDF responsivo */}
         <div className="w-full flex justify-center">
-          <PDFViewer style={{ width: "100%", maxWidth: "850px", height: "80vh" }}>
-            <BudgetPDF
-              doors={doors}
-              extraProducts={extraProducts} 
-              clientName={clientName}
-              company={company}
-              totalGeral={totalGeral}
-              totalComDesconto={totalComDesconto} 
-              discount={discount}
-              dataHoje={dataHoje}
-            />
-          </PDFViewer>
+          {window.innerWidth >= 768 ? (
+            <PDFViewer style={{ width: "100%", maxWidth: "100%", height: "80vh", minHeight: "350px" }}>
+              <BudgetPDF
+                doors={doors}
+                extraProducts={extraProducts} 
+                clientName={clientName}
+                company={company}
+                totalGeral={totalGeral}
+                totalComDesconto={totalComDesconto} 
+                discount={discount}
+                dataHoje={dataHoje}
+              />
+            </PDFViewer>
+          ) : (
+            <p className="text-center text-sm p-4">
+              Seu orçamento está pronto! Clique no botão abaixo para baixar o PDF.
+            </p>
+          )}
         </div>
 
         {/* Botão de download */}

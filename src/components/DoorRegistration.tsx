@@ -12,7 +12,9 @@ export default function DoorRegistration({ onSubmit }: DoorDataProps) {
   // setar altura, largura e quantidade
   const [widthDoor, setWidthDoor] = useState(0);
   const [heightDoor, setHeightDoor] = useState(0);
-  const [quantityDoor, setQuantityDoor] = useState(1);
+  const [quantityDoor, setQuantityDoor] = useState(0);
+  // setar se é lâmina transvision ou não
+  const [laminaTransvision, setLaminaTransvision] = useState(false);
   // setar opção com noBreak ou sem noBreak
   const [hasUPS, setHasUPS] = useState<"comNB" | "semNB" | "" >("");
   // setar se é kit para serralheiro ou Porta com Instalação
@@ -37,6 +39,7 @@ export default function DoorRegistration({ onSubmit }: DoorDataProps) {
       quantity: quantityDoor,
       engine: hasUPS,
       productType: productType,
+      laminaTransvision: laminaTransvision,
       valueM2: productType === "kitInstalado" && area < 10 ? valueM2 : undefined,
     };
 
@@ -52,6 +55,7 @@ export default function DoorRegistration({ onSubmit }: DoorDataProps) {
     setHasUPS("");
     setProductType("");
     setValueM2(0);
+    setLaminaTransvision(false);
   }
 
   return (
@@ -86,13 +90,24 @@ export default function DoorRegistration({ onSubmit }: DoorDataProps) {
       </label>
 
       <label className="block mb-2">
+        Lâmina Transvision: 
+        <input 
+          type="checkbox" 
+          id="laminaTransvision"
+          checked={laminaTransvision}
+          onChange={(e) => setLaminaTransvision(e.target.checked)}
+          className="mr-4"
+        />
+      </label>
+
+      <label className="block mb-2">
         Quantidade:
         <input 
           type="number"
           min={1}
           placeholder="Exemplo: 2"
           value={quantityDoor}
-          onChange={(e) => setQuantityDoor(parseInt(e.target.value) || 1)}
+          onChange={(e) => setQuantityDoor(parseInt(e.target.value) || 0)}
           className="w-full p-2 border rounded mt-1"
         />
       </label>

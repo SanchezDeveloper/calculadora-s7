@@ -99,20 +99,18 @@ export default function Calculator() {
                 className="p-4 border rounded flex justify-between items-start"
               >
                 <div>
-                  <p>Tipo: {d.productType}</p>
-                  <p>
-                    Dimensões: {d.width} x {d.height}
+                  <p><span className=" font-bold">Tipo:</span>  
+                    {d.productType === "kitSerralheiro" ? " Kit Serralheiro" : " Kit Instalado"} - {d.laminaTransvision ? "Lâmina Transvision" : "Lâmina Tradicional"}
                   </p>
-                  <p>Quantidade: {d.quantity}</p>
-                  <p>Área: {d.area.toFixed(2)} m²</p>
-                  <p>Total: R$ {d.total.toFixed(2)}</p>
-                  {d.productType === "kitSerralheiro" && (
-                    <>
-                      <p>Motor: {d.motor}</p>
-                      <p>Preço do motor: R$ {d.motorPrice}</p>
-                      <p>Peso estimado: {d.pesoMotor}</p>
-                    </>
-                  )}
+                  <p>
+                    <span className=" font-bold">Dimensões:</span> {d.width} x {d.height}
+                  </p>
+                  <p><span className=" font-bold">Quantidade:</span> {d.quantity}</p>
+                  <p><span className=" font-bold">Área:</span> {d.area.toFixed(2)} m²</p>
+                  <p><span className=" font-bold">Motor:</span> {d.motor}</p>
+                  <p><span className=" font-bold">Valor do motor:</span> R$ {d.motorPrice}</p>
+                  <p><span className=" font-bold">Peso Estimado:</span> {d.pesoMotor}Kg</p>
+                  <p><span className=" font-bold">Total: </span> R$ {d.total.toFixed(2)}</p>
                 </div>
 
                 <button
@@ -187,7 +185,9 @@ export default function Calculator() {
             onClick={() => setShowPreview(true)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow"
           >
-            Visualizar Prévia do Orçamento
+            {window.innerWidth >= 768
+              ? "Visualizar e Baixar Orçamento (PDF)"
+              : "Baixar Orçamento (PDF)"}
           </button>
         </div>
       )}

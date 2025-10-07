@@ -1,4 +1,3 @@
-
 import { DoorData, Motor } from "@/utils/types/DoorData";
 import prices from "../data/prices.json";
 
@@ -8,7 +7,9 @@ export function calculateDoorPrice(door: DoorData) {
   const area = width * height;
   const pesoMotorBase = area * 15; // peso estimado original (sempre exibido)
 
+  // -----------------------
   // Função auxiliar: escolhe o primeiro motor que satisfaça a regra
+  // -----------------------
   function escolherMotorPorRegras(
     tipoEngine: "comNB" | "semNB",
     pesoParaSelecao: number
@@ -36,16 +37,20 @@ export function calculateDoorPrice(door: DoorData) {
   // CÁLCULO PARA KIT SERRALHEIRO
   // -----------------------
   if (productType === "kitSerralheiro") {
-    // peso usado para seleção: se comNB, considera +100; se semNB usa o peso base
     const pesoMotorAjustado = engine === "comNB" ? pesoMotorBase + 100 : pesoMotorBase;
-
     const escolhido = escolherMotorPorRegras(engine, pesoMotorAjustado);
     if (!escolhido) throw new Error("Nenhum motor suporta esse peso!");
 
     const { key: motorKey, motor } = escolhido;
     const motorPrice = motor.price;
 
-    const valorLamina = area * prices.KitSerralheiro.metroQLamina;
+    // Se for Lâmina Transvision, usar preço diferente
+    const valorLamina = area * (
+      door.laminaTransvision
+        ? prices.KitSerralheiro.metroQLaminaTransvision
+        : prices.KitSerralheiro.metroQLamina
+    );
+
     const valorGuias = height * prices.KitSerralheiro.metroGuias * 2;
     const valorSoleira = width * prices.KitSerralheiro.metroSoleira;
     const valorEixo = width * prices.KitSerralheiro.metroEixo;
@@ -55,7 +60,7 @@ export function calculateDoorPrice(door: DoorData) {
     return {
       productType,
       area,
-      pesoMotor: pesoMotorBase, // exibir sempre o peso estimado original
+      pesoMotor: pesoMotorBase,
       motor: motorKey,
       motorPrice,
       total,
@@ -69,29 +74,50 @@ export function calculateDoorPrice(door: DoorData) {
   // CÁLCULO PARA KIT INSTALADO
   // -----------------------
   if (productType === "kitInstalado") {
-    const pricePerM2 = area >= 10 ? prices.KitInstalado.acima10Metros : valueM2 || prices.KitInstalado.abaixo10Metros;
+    let pricePerM2: number;
 
-    let total = area * pricePerM2 * quantity;
-
-    // Se for comNB: calcular diferença entre motor comNB e semNB (aplicando regras de seleção)
-    if (engine === "comNB") {
-      // seleciona semNB usando regra semNB com peso base
-      const semSelecionado = escolherMotorPorRegras("semNB", pesoMotorBase);
-      // seleciona comNB usando regra comNB com peso base + 100
-      const comSelecionado = escolherMotorPorRegras("comNB", pesoMotorBase + 100);
-
-      if (semSelecionado && comSelecionado) {
-        const diff = comSelecionado.motor.price - semSelecionado.motor.price;
-        total += diff * quantity;
+    // Seleciona o preço base considerando área e tipo de lâmina
+    if (area >= 10) {
+      pricePerM2 = door.laminaTransvision
+        ? prices.KitInstalado.acima10MetrosTransvision
+        : prices.KitInstalado.acima10Metros;
+    } else {
+      // Se o usuário informou um valor manual, usa ele;
+      // caso contrário, usa o preço padrão (ou o Transvision, se marcado)
+      if (valueM2 && valueM2 > 0) {
+        pricePerM2 = valueM2;
       } else {
-        // se não encontrou um par de motores, podemos tentar ainda:
-        // - se semNB não existir dentro de 90% -> erro (ou ignorar)
-        // - se comNB não existir -> erro (ou ignorar)
-        // Escolhi não lançar aqui para não quebrar o fluxo, apenas não somo a diferença.
+        pricePerM2 = door.laminaTransvision
+          ? prices.KitInstalado.abaixo10MetrosTransvision
+          : prices.KitInstalado.abaixo10Metros;
       }
     }
 
-    // Se for semNB: garantir que exista um motor semNB que suporte o peso dentro de 90%
+    let total = area * pricePerM2 * quantity;
+
+    // Seleção de motores (para exibição)
+    const pesoMotorAjustado = engine === "comNB" ? pesoMotorBase + 100 : pesoMotorBase;
+    const escolhido = escolherMotorPorRegras(engine, pesoMotorAjustado);
+
+    let motorKey = "Não definido";
+    let motorPrice = 0;
+
+    if (escolhido) {
+      motorKey = escolhido.key;
+      motorPrice = escolhido.motor.price;
+    }
+
+    // Diferença de preço de motor quando COM NB
+    if (engine === "comNB") {
+      const semSelecionado = escolherMotorPorRegras("semNB", pesoMotorBase);
+      const comSelecionado = escolherMotorPorRegras("comNB", pesoMotorBase + 100);
+      if (semSelecionado && comSelecionado) {
+        const diff = comSelecionado.motor.price - semSelecionado.motor.price;
+        total += diff * quantity;
+      }
+    }
+
+    // Validação de motor para versão SEM NB
     if (engine === "semNB") {
       const semOk = escolherMotorPorRegras("semNB", pesoMotorBase);
       if (!semOk) {
@@ -102,6 +128,9 @@ export function calculateDoorPrice(door: DoorData) {
     return {
       productType,
       area,
+      pesoMotor: pesoMotorBase, // exibir sempre o peso estimado
+      motor: motorKey, // motor escolhido
+      motorPrice, // preço do motor apenas para exibição
       pricePerM2,
       total,
       width,

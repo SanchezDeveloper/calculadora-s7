@@ -1,6 +1,7 @@
 {
   "KitSerralheiro": {
     "metroQLamina": 80,
+    "metroQLaminaTransvision": 120,
     "metroEixo": 60,
     "metroSoleira": 50,
     "metroGuias": 30,
@@ -66,6 +67,8 @@
 
   "KitInstalado": {
     "acima10Metros": 299,
-    "abaixo10Metros": 0
+    "abaixo10Metros": 0,
+    "acima10MetrosTransvision": 339,
+    "abaixo10MetrosTransvision": 0
   }
 }
