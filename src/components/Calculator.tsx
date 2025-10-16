@@ -9,6 +9,7 @@ type ExtraProduct = {
   quantity: number;
   unitPrice: number;
   total: number;
+  attachedToDoor?: number; // Índice da porta à qual o produto extra está anexado (opcional)
 };
 
 export default function Calculator() {
@@ -34,10 +35,10 @@ export default function Calculator() {
   }
 
   // Adiciona produto extra
-  function handleAddExtraProduct(product: Omit<ExtraProduct, "total">) {
-    const total = product.quantity * product.unitPrice;
-    setExtraProducts((prev) => [...prev, { ...product, total }]);
-  }
+  function handleAddExtraProduct(product: { name: string; quantity: number; unitPrice: number; attachedToDoorIndex?: number }) {
+  const total = product.quantity * product.unitPrice;
+  setExtraProducts((prev) => [...prev, { ...product, total }]);
+}
 
   // Remove produto extra
   function handleRemoveExtraProduct(index: number) {
@@ -85,7 +86,7 @@ export default function Calculator() {
       {/* Cadastro de produtos extras */}
       <div className="bg-white p-6 rounded shadow-md max-w-md mx-auto mb-4 flex flex-col justify-center">
         <h2 className="text-xl mb-4 font-medium">Adicionar Outros Produtos</h2>
-        <ExtraProductForm onSubmit={handleAddExtraProduct} />
+        <ExtraProductForm onSubmit={handleAddExtraProduct} doors={doors} />
       </div>
 
       {/* Lista de portas */}
@@ -210,20 +211,28 @@ export default function Calculator() {
  * ----------------------------- */
 function ExtraProductForm({
   onSubmit,
+  doors,
 }: {
-  onSubmit: (product: { name: string; quantity: number; unitPrice: number }) => void;
+  onSubmit: (product: { name: string; quantity: number; unitPrice: number; attachedToDoorIndex?: number }) => void;
+  doors: CalculatedDoor[];
 }) {
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState<number>(1);
   const [unitPrice, setUnitPrice] = useState<number>(0);
+  const [attachedTo, setAttachedTo] = useState<string>("general"); // "general" ou índice string
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || quantity <= 0 || unitPrice <= 0) return;
-    onSubmit({ name, quantity, unitPrice });
+
+    const attachedToDoorIndex =
+      attachedTo === "general" ? undefined : Number(attachedTo);
+
+    onSubmit({ name, quantity, unitPrice, attachedToDoorIndex });
     setName("");
     setQuantity(1);
     setUnitPrice(0);
+    setAttachedTo("general");
   }
 
   return (
@@ -238,6 +247,7 @@ function ExtraProductForm({
           placeholder="Nome do produto"
         />
       </div>
+
       <div className="flex gap-2">
         <div>
           <label className="block mb-1">Quantidade</label>
@@ -259,6 +269,23 @@ function ExtraProductForm({
           />
         </div>
       </div>
+
+      <div>
+        <label className="block mb-1">Associar a porta (opcional)</label>
+        <select
+          value={attachedTo}
+          onChange={(e) => setAttachedTo(e.target.value)}
+          className="border rounded px-3 py-2 w-full"
+        >
+          <option value="general">Orçamento geral / sem associação</option>
+          {doors.map((d, idx) => (
+            <option key={idx} value={String(idx)}>
+              {`Porta ${idx + 1} — ${d.productType} — ${d.width}x${d.height}`}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <button
         type="submit"
         className="mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"

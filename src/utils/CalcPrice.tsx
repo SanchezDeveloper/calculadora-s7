@@ -54,7 +54,6 @@ export function calculateDoorPrice(door: DoorData) {
     const valorGuias = height * prices.KitSerralheiro.metroGuias * 2;
     const valorSoleira = width * prices.KitSerralheiro.metroSoleira;
     const valorEixo = width * prices.KitSerralheiro.metroEixo;
-
     const total = (motorPrice + valorLamina + valorGuias + valorSoleira + valorEixo) * quantity;
 
     return {
