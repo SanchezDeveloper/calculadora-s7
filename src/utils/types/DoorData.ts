@@ -46,6 +46,11 @@ export type CalculatedDoor =
       height: number;
       quantity: number;
       laminaTransvision?: boolean;
+      priceGuia: number;
+      priceSoleira: number;
+      priceEixo: number;
+      priceLamina: number;
+      engine: string; // Se você usa engine no PDF
     }
   | {
       productType: "kitInstalado";

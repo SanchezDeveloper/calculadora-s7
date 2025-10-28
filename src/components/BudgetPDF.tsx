@@ -11,6 +11,10 @@ interface BudgetPDFProps {
     name: string;
     cnpj: string;
     logo: string;
+    phone: string;
+    mail:string;
+    site: string;
+    address: string;
   };
   totalGeral: number;
   totalComDesconto: number;
@@ -39,17 +43,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 16,
   },
-  companyInfo: {
-    alignItems: "flex-end",
-  },
   companyName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
     color: "#000",
   },
-  companyCNPJ: {
+  companyData: {
     fontSize: 10,
     color: "#000",
+  },
+  spanCompanyData: {
+    fontWeight: "bold"
   },
   clientInfo: {
     marginBottom: 12,
@@ -61,34 +65,42 @@ const styles = StyleSheet.create({
   bold: {
     fontWeight: "bold",
   },
+  sectionSubtitle: {
+    fontSize: 10,
+    color: "#333",
+    fontWeight: "normal",
+  },
   table: {
-    width: "100%",
+    width: '100%',
     borderWidth: 1,
-    borderColor: "#ff6600",
-    marginTop: 12,
+    borderColor: '#000',
+    marginBottom: 6,
   },
   row: {
-    flexDirection: "row",
+    flexDirection: 'row',
     borderBottomWidth: 1,
-    borderColor: "#ff6600",
-    alignItems: "center",
+    borderColor: '#000',
   },
   headerRow: {
-    backgroundColor: "#ff6600",
+    backgroundColor: '#e5e5e5',
+  },
+  footerRow: {
+    backgroundColor: '#f0f0f0',
   },
   headerCell: {
     flex: 1,
-    padding: 6,
-    fontSize: 10,
-    color: "#fff",
-    fontWeight: "bold",
+    fontSize: 9,
+    fontWeight: 'bold',
+    padding: 2,
+    textAlign: 'center',
   },
   cell: {
     flex: 1,
-    padding: 6,
-    fontSize: 10,
-    color: "#000",
+    fontSize: 9,
+    padding: 2,
+    textAlign: 'center',
   },
+
   total: {
     marginTop: 12,
     textAlign: "right",
@@ -97,8 +109,19 @@ const styles = StyleSheet.create({
     color: "#ff6600",
   },
   logo: {
-    width: 140,
-    height: 70,
+    width: 210,
+    height: 105,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    color: "#ff6600",
+    fontWeight: "bold",
+    marginTop: 10,
+    marginBottom: 4,
+  },
+  itemDetail: {
+    fontSize: 10,
+    marginBottom: 2,
   },
 });
 
@@ -112,22 +135,6 @@ export default function BudgetPDF({
   discount,
   dataHoje,
 }: BudgetPDFProps) {
-  // Junta portas + extras em uma lista só
-  const allItems = [
-    ...doors.map((d) => ({
-      name: d.productType,
-      quantity: d.quantity,
-      unitPrice: d.total / d.quantity,
-      total: d.total,
-    })),
-    ...extraProducts.map((p) => ({
-      name: p.name,
-      quantity: p.quantity,
-      unitPrice: p.unitPrice,
-      total: p.total,
-    })),
-  ];
-
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -136,11 +143,16 @@ export default function BudgetPDF({
 
         {/* Cabeçalho */}
         <View style={styles.header}>
-          {company.logo && <Image src={company.logo} style={styles.logo} />}
-          <View style={styles.companyInfo}>
+          <View>
             <Text style={styles.companyName}>{company.name}</Text>
-            <Text style={styles.companyCNPJ}>CNPJ: {company.cnpj}</Text>
+            <Text style={styles.companyData}><Text style={styles.spanCompanyData}>CNPJ:</Text> {company.cnpj}</Text>
+            <Text style={styles.companyData}><Text style={styles.spanCompanyData}>Telefone:</Text> {company.phone}</Text>
+            <Text style={styles.companyData}><Text style={styles.spanCompanyData}>E-mail:</Text> {company.mail}</Text>
+            <Text style={styles.companyData}><Text style={styles.spanCompanyData}>Site:</Text> {company.site}</Text>
+            <Text style={styles.companyData}><Text style={styles.spanCompanyData}>Endereço:</Text> {company.address}</Text>
           </View>
+
+          {company.logo && <Image src={company.logo} style={styles.logo} />}
         </View>
 
         {/* Dados do cliente */}
@@ -153,35 +165,137 @@ export default function BudgetPDF({
           </Text>
         </View>
 
-        {/* Tabela única */}
-        <View style={styles.table}>
-          <View style={[styles.row, styles.headerRow]}>
-            <Text style={styles.headerCell}>Produto</Text>
-            <Text style={styles.headerCell}>Quantidade</Text>
-            <Text style={styles.headerCell}>Valor Unitário (R$)</Text>
-            <Text style={styles.headerCell}>Valor Total (R$)</Text>
-          </View>
+        {/* Portas */}
+        {doors.map((door, index) => (
+          <View key={index} style={{ marginBottom: 16 }}>
+            {/* Cabeçalho de cada porta */}
+            <Text style={styles.sectionTitle}>
+              0{door.quantity} un. -{" "}
+              {door.productType === "kitSerralheiro" ? "Kit Serralheiro" : "Kit Instalado"}
+              {door.productType === "kitSerralheiro" && (
+                <Text style={styles.sectionSubtitle}>
+                  {" "} | Medidas: {door.height.toFixed(2)}m x {door.width.toFixed(2)}m | Área:{" "}
+                  {door.area.toFixed(3)}m²
+                </Text>
+              )}
+            </Text>
 
-          {allItems.map((item, idx) => (
-            <View style={styles.row} key={idx}>
-              <Text style={styles.cell}>{item.name}</Text>
-              <Text style={styles.cell}>{item.quantity}</Text>
-              <Text style={styles.cell}>{item.unitPrice.toFixed(2)}</Text>
-              <Text style={styles.cell}>{item.total.toFixed(2)}</Text>
+            {/* --- KIT INSTALADO --- */}
+            {door.productType === "kitInstalado" ? (
+              <View style={styles.table}>
+                <View style={[styles.row, styles.headerRow]}>
+                  <Text style={styles.headerCell}>Produto</Text>
+                  <Text style={styles.headerCell}>Qtd</Text>
+                  <Text style={styles.headerCell}>Valor Unitário (R$)</Text>
+                  <Text style={styles.headerCell}>Valor Total (R$)</Text>
+                </View>
+
+                <View style={styles.row}>
+                  <Text style={styles.cell}>Porta de Enrolar Automática</Text>
+                  <Text style={styles.cell}>{door.quantity}</Text>
+                  <Text style={styles.cell}>{(door.total / door.quantity).toFixed(2)}</Text>
+                  <Text style={styles.cell}>{door.total.toFixed(2)}</Text>
+                </View>
+              </View>
+            ) : (
+              /* --- KIT SERRALHEIRO --- */
+              <View style={styles.table}>
+                <View style={[styles.row, styles.headerRow]}>
+                  <Text style={[styles.headerCell, { flex: 2 }]}>Descrição</Text>
+                  <Text style={styles.headerCell}>Medidas</Text>
+                  <Text style={styles.headerCell}>Valor Unitário (R$)</Text>
+                  <Text style={styles.headerCell}>Valor Total (R$)</Text>
+                </View>
+
+                <View style={styles.row}>
+                  <Text style={[styles.cell, { flex: 2 }]}>Lâmina ({door.laminaTransvision ? "Transvision" : "Lisa"})</Text>
+                  <Text style={styles.cell}>{door.area.toFixed(2)} m²</Text>
+                  <Text style={styles.cell}>{(door.priceLamina / door.area).toFixed(2)}</Text>
+                  <Text style={styles.cell}>{(door.priceLamina ?? 0).toFixed(2)}</Text>
+                </View>
+
+                <View style={styles.row}>
+                  <Text style={[styles.cell, { flex: 2 }]}>Guia</Text>
+                  <Text style={styles.cell}>{(door.height * 2).toFixed(2)} m</Text>
+                  <Text style={styles.cell}>{(door.priceGuia ?? 0).toFixed(2)}</Text>
+                  <Text style={styles.cell}>
+                    {(door.height * 2 * (door.priceGuia ?? 0)).toFixed(2)}
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <Text style={[styles.cell, { flex: 2 }]}>Soleira</Text>
+                  <Text style={styles.cell}>{door.width.toFixed(2)} m</Text>
+                  <Text style={styles.cell}>{(door.priceSoleira ?? 0).toFixed(2)}</Text>
+                  <Text style={styles.cell}>
+                    {(door.width * (door.priceSoleira ?? 0)).toFixed(2)}
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <Text style={[styles.cell, { flex: 2 }]}>Eixo</Text>
+                  <Text style={styles.cell}>{door.width.toFixed(2)} m</Text>
+                  <Text style={styles.cell}>{(door.priceEixo ?? 0).toFixed(2)}</Text>
+                  <Text style={styles.cell}>
+                    {(door.width * (door.priceEixo ?? 0)).toFixed(2)}
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <Text style={[styles.cell, { flex: 2 }]}>
+                    Motor ({door.motor}) {door.engine ? `(${door.engine})` : ""}
+                  </Text>
+                  <Text style={styles.cell}>{door.quantity}</Text>
+                  <Text style={styles.cell}>{(door.motorPrice ?? 0).toFixed(2)}</Text>
+                  <Text style={styles.cell}>{(door.motorPrice ?? 0).toFixed(2)}</Text>
+                </View>
+
+                <View style={[styles.row, styles.footerRow]}>
+                  <Text style={[styles.cell, { flex: 2, fontWeight: "bold" }]}>
+                    Total da Porta
+                  </Text>
+                  <Text style={styles.cell}></Text>
+                  <Text style={styles.cell}></Text>
+                  <Text style={[styles.cell, { fontWeight: "bold" }]}>
+                    R$ {door.total.toFixed(2)}
+                  </Text>
+                </View>
+              </View>
+            )}
+          </View>
+        ))}
+
+        {/* Produtos adicionais */}
+        {extraProducts.length > 0 && (
+          <>
+            <Text style={styles.sectionTitle}>Produtos Adicionais</Text>
+            <View style={styles.table}>
+              <View style={[styles.row, styles.headerRow]}>
+                <Text style={[styles.headerCell, { flex: 2 }]}>Produto</Text>
+                <Text style={styles.headerCell}>Qtd</Text>
+                <Text style={styles.headerCell}>Valor Unitário (R$)</Text>
+                <Text style={styles.headerCell}>Valor Total (R$)</Text>
+              </View>
+              {extraProducts.map((p, idx) => (
+                <View style={styles.row} key={idx}>
+                  <Text style={[styles.cell, { flex: 2 }]}>{p.name}</Text>
+                  <Text style={styles.cell}>{p.quantity}</Text>
+                  <Text style={styles.cell}>{p.unitPrice.toFixed(2)}</Text>
+                  <Text style={styles.cell}>{p.total.toFixed(2)}</Text>
+                </View>
+              ))}
             </View>
-          ))}
-        </View>
+          </>
+        )}
 
         {/* Totais */}
-        <Text style={styles.total}>
-          Total do Orçamento: R$ {totalGeral.toFixed(2)}
-        </Text>
-
+        <Text style={styles.total}>Total do Orçamento: R$ {totalGeral.toFixed(2)}</Text>
         {discount > 0 && (
           <Text style={styles.total}>
             Total à vista com {discount}% de desconto: R$ {totalComDesconto.toFixed(2)}
           </Text>
         )}
+
       </Page>
     </Document>
   );
