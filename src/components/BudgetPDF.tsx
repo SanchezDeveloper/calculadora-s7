@@ -24,39 +24,60 @@ interface BudgetPDFProps {
 
 const styles = StyleSheet.create({
   page: {
+    position: "relative",
     flexDirection: "column",
     backgroundColor: "#fff",
-    padding: 24,
+    padding: 0,
     fontFamily: "Helvetica",
+  },
+  watermarkImage: {
+    position: "absolute",
+    top: "25%", // centraliza verticalmente
+    left: "15%", // centraliza horizontalmente
+    width: "70%", // ocupa boa parte da página
+    opacity: 0.07, // bem translúcido
+    transform: "rotate(-30deg)", // dá um toque estilizado
+    zIndex: -1, // fica por trás do conteúdo
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#ff6600",
     textAlign: "center",
-    marginBottom: 16,
+    marginBottom: 4,
     textTransform: "uppercase",
+  },
+  mainInfo: {
+    padding: 24
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
+    alignItems: "flex-start",
+    backgroundColor: "#1f1d21", 
+    padding: 12,
+    borderRadius: 6,
+    color: "#FFF",
   },
   companyName: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#000",
+    marginBottom: 4,
   },
   companyData: {
     fontSize: 10,
-    color: "#000",
+    color: "#e0e0e0",
+    marginBottom: 1,
   },
   spanCompanyData: {
-    fontWeight: "bold"
+    fontWeight: "bold",
+    color: "#ffa200",
   },
   clientInfo: {
-    marginBottom: 12,
+    display: "flex",
+    flexDirection: "row",
+    gap: 4,
+    marginTop: 4
   },
   clientText: {
     fontSize: 12,
@@ -82,10 +103,12 @@ const styles = StyleSheet.create({
     borderColor: '#000',
   },
   headerRow: {
-    backgroundColor: '#e5e5e5',
+    backgroundColor: '#1f1d21',
+    color: "#FFF"
   },
   footerRow: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#1f1d21',
+    color: "#FFF"
   },
   headerCell: {
     flex: 1,
@@ -111,6 +134,9 @@ const styles = StyleSheet.create({
   logo: {
     width: 210,
     height: 105,
+    objectFit: "contain",
+    borderRadius: 4,
+    border: "1pt solid #ffa200",
   },
   sectionTitle: {
     fontSize: 14,
@@ -123,6 +149,27 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginBottom: 2,
   },
+  signatureDiv: {
+    marginTop: 50,
+    fontSize: 10,
+    textAlign: "center"
+  },
+  signatureText: {
+    fontWeight: "bold"
+  },
+  footerStylish: {
+    position: "absolute",
+    textAlign: "center",
+    justifyContent: "center",
+    bottom: 0,
+    width: "100%",
+    height: 30,
+    backgroundColor: "linear-gradient(to bottom, #000000, #FFA500)"
+  }, 
+  footerText: {
+    fontSize: 8,
+    color: "#c1c1c1"
+  }
 });
 
 export default function BudgetPDF({
@@ -137,165 +184,174 @@ export default function BudgetPDF({
 }: BudgetPDFProps) {
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
-        {/* Título */}
-        <Text style={styles.title}>Orçamento</Text>
+      <Page size="A4" style={styles.page}>       
+        {/* Marca d'água */}
+        {company.logo && (
+          <Image src={company.logo} style={styles.watermarkImage} />
+        )}
 
-        {/* Cabeçalho */}
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.companyName}>{company.name}</Text>
-            <Text style={styles.companyData}><Text style={styles.spanCompanyData}>CNPJ:</Text> {company.cnpj}</Text>
-            <Text style={styles.companyData}><Text style={styles.spanCompanyData}>Telefone:</Text> {company.phone}</Text>
-            <Text style={styles.companyData}><Text style={styles.spanCompanyData}>E-mail:</Text> {company.mail}</Text>
-            <Text style={styles.companyData}><Text style={styles.spanCompanyData}>Site:</Text> {company.site}</Text>
-            <Text style={styles.companyData}><Text style={styles.spanCompanyData}>Endereço:</Text> {company.address}</Text>
+        <View style={styles.mainInfo}>
+          {/* Título */}
+          <Text style={styles.title}>Orçamento</Text>
+
+          {/* Cabeçalho */}
+          <View style={styles.header}>
+            <View>
+              <Text style={styles.companyName}>{company.name}</Text>
+              <Text style={styles.companyData}><Text style={styles.spanCompanyData}>CNPJ:</Text> {company.cnpj}</Text>
+              <Text style={styles.companyData}><Text style={styles.spanCompanyData}>Telefone:</Text> {company.phone}</Text>
+              <Text style={styles.companyData}><Text style={styles.spanCompanyData}>E-mail:</Text> {company.mail}</Text>
+              <Text style={styles.companyData}><Text style={styles.spanCompanyData}>Site:</Text> {company.site}</Text>
+              <Text style={styles.companyData}><Text style={styles.spanCompanyData}>Endereço:</Text> {company.address}</Text>
+            </View>
+            {company.logo && <Image src={company.logo} style={styles.logo} />}
           </View>
 
-          {company.logo && <Image src={company.logo} style={styles.logo} />}
-        </View>
-
-        {/* Dados do cliente */}
-        <View style={styles.clientInfo}>
-          <Text style={styles.clientText}>
-            <Text style={styles.bold}>Cliente:</Text> {clientName}
-          </Text>
-          <Text style={styles.clientText}>
-            <Text style={styles.bold}>Data:</Text> {dataHoje}
-          </Text>
-        </View>
-
-        {/* Portas */}
-        {doors.map((door, index) => (
-          <View key={index} style={{ marginBottom: 16 }}>
-            {/* Cabeçalho de cada porta */}
-            <Text style={styles.sectionTitle}>
-              0{door.quantity} un. -{" "}
-              {door.productType === "kitSerralheiro" ? "Kit Serralheiro" : "Kit Instalado"}
-              {door.productType === "kitSerralheiro" && (
-                <Text style={styles.sectionSubtitle}>
-                  {" "} | Medidas: {door.height.toFixed(2)}m x {door.width.toFixed(2)}m | Área:{" "}
-                  {door.area.toFixed(3)}m²
-                </Text>
-              )}
+          {/* Dados do cliente */}
+          <View style={styles.clientInfo}>
+            <Text style={styles.clientText}>
+              <Text style={styles.bold}>Cliente:</Text> {clientName}
             </Text>
+            <Text style={styles.clientText}>
+              <Text style={styles.bold}>Data:</Text> {dataHoje}
+            </Text>
+          </View>
 
-            {/* --- KIT INSTALADO --- */}
-            {door.productType === "kitInstalado" ? (
+          {/* Portas */}
+          {doors.map((door, index) => (
+            <View key={index} style={{ marginBottom: 16 }}>
+              {/* Cabeçalho de cada porta */}
+              <Text style={styles.sectionTitle}>
+                0{door.quantity} un. -{" "}
+                {door.productType === "kitSerralheiro" ? "Kit Serralheiro" : "Kit Instalado"}
+                {door.productType === "kitSerralheiro" && (
+                  <Text style={styles.sectionSubtitle}>
+                    {" "} | Medidas: {door.height.toFixed(2)}m x {door.width.toFixed(2)}m | Área:{" "}
+                    {door.area.toFixed(3)}m²
+                  </Text>
+                )}
+              </Text>
+              {/* --- KIT INSTALADO --- */}
+              {door.productType === "kitInstalado" ? (
+                <View style={styles.table}>
+                  <View style={[styles.row, styles.headerRow]}>
+                    <Text style={styles.headerCell}>Produto</Text>
+                    <Text style={styles.headerCell}>Qtd</Text>
+                    <Text style={styles.headerCell}>Valor Unitário (R$)</Text>
+                    <Text style={styles.headerCell}>Valor Total (R$)</Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={styles.cell}>Porta de Enrolar Automática</Text>
+                    <Text style={styles.cell}>{door.quantity}</Text>
+                    <Text style={styles.cell}>{(door.total / door.quantity).toFixed(2)}</Text>
+                    <Text style={styles.cell}>{door.total.toFixed(2)}</Text>
+                  </View>
+                </View>
+              ) : (
+                /* --- KIT SERRALHEIRO --- */
+                <View style={styles.table}>
+                  <View style={[styles.row, styles.headerRow]}>
+                    <Text style={[styles.headerCell, { flex: 2 }]}>Descrição</Text>
+                    <Text style={styles.headerCell}>Medidas</Text>
+                    <Text style={styles.headerCell}>Valor Unitário (R$)</Text>
+                    <Text style={styles.headerCell}>Valor Total (R$)</Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={[styles.cell, { flex: 2 }]}>Lâmina ({door.laminaTransvision ? "Transvision" : "Lisa"})</Text>
+                    <Text style={styles.cell}>{door.area.toFixed(2)} m²</Text>
+                    <Text style={styles.cell}>{(door.priceLamina / door.area).toFixed(2)}</Text>
+                    <Text style={styles.cell}>{(door.priceLamina ?? 0).toFixed(2)}</Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={[styles.cell, { flex: 2 }]}>Guia</Text>
+                    <Text style={styles.cell}>{(door.height * 2).toFixed(2)} m</Text>
+                    <Text style={styles.cell}>{(door.priceGuia ?? 0).toFixed(2)}</Text>
+                    <Text style={styles.cell}>
+                      {(door.height * 2 * (door.priceGuia ?? 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={[styles.cell, { flex: 2 }]}>Soleira</Text>
+                    <Text style={styles.cell}>{door.width.toFixed(2)} m</Text>
+                    <Text style={styles.cell}>{(door.priceSoleira ?? 0).toFixed(2)}</Text>
+                    <Text style={styles.cell}>
+                      {(door.width * (door.priceSoleira ?? 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={[styles.cell, { flex: 2 }]}>Eixo</Text>
+                    <Text style={styles.cell}>{door.width.toFixed(2)} m</Text>
+                    <Text style={styles.cell}>{(door.priceEixo ?? 0).toFixed(2)}</Text>
+                    <Text style={styles.cell}>
+                      {(door.width * (door.priceEixo ?? 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={[styles.cell, { flex: 2 }]}>
+                      Motor ({door.motor}) {door.engine ? `(${door.engine})` : ""}
+                    </Text>
+                    <Text style={styles.cell}>{door.quantity}</Text>
+                    <Text style={styles.cell}>{(door.motorPrice ?? 0).toFixed(2)}</Text>
+                    <Text style={styles.cell}>{(door.motorPrice ?? 0).toFixed(2)}</Text>
+                  </View>
+                  <View style={[styles.row, styles.footerRow]}>
+                    <Text style={[styles.cell, { flex: 2, fontWeight: "bold" }]}>
+                      Total da Porta
+                    </Text>
+                    <Text style={styles.cell}></Text>
+                    <Text style={styles.cell}></Text>
+                    <Text style={[styles.cell, { fontWeight: "bold" }]}>
+                      R$ {door.total.toFixed(2)}
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          ))}
+
+          {/* Produtos adicionais */}
+          {extraProducts.length > 0 && (
+            <>
+              <Text style={styles.sectionTitle}>Produtos Adicionais</Text>
               <View style={styles.table}>
                 <View style={[styles.row, styles.headerRow]}>
-                  <Text style={styles.headerCell}>Produto</Text>
+                  <Text style={[styles.headerCell, { flex: 2 }]}>Produto</Text>
                   <Text style={styles.headerCell}>Qtd</Text>
                   <Text style={styles.headerCell}>Valor Unitário (R$)</Text>
                   <Text style={styles.headerCell}>Valor Total (R$)</Text>
                 </View>
-
-                <View style={styles.row}>
-                  <Text style={styles.cell}>Porta de Enrolar Automática</Text>
-                  <Text style={styles.cell}>{door.quantity}</Text>
-                  <Text style={styles.cell}>{(door.total / door.quantity).toFixed(2)}</Text>
-                  <Text style={styles.cell}>{door.total.toFixed(2)}</Text>
-                </View>
+                {extraProducts.map((p, idx) => (
+                  <View style={styles.row} key={idx}>
+                    <Text style={[styles.cell, { flex: 2 }]}>{p.name}</Text>
+                    <Text style={styles.cell}>{p.quantity}</Text>
+                    <Text style={styles.cell}>{p.unitPrice.toFixed(2)}</Text>
+                    <Text style={styles.cell}>{p.total.toFixed(2)}</Text>
+                  </View>
+                ))}
               </View>
-            ) : (
-              /* --- KIT SERRALHEIRO --- */
-              <View style={styles.table}>
-                <View style={[styles.row, styles.headerRow]}>
-                  <Text style={[styles.headerCell, { flex: 2 }]}>Descrição</Text>
-                  <Text style={styles.headerCell}>Medidas</Text>
-                  <Text style={styles.headerCell}>Valor Unitário (R$)</Text>
-                  <Text style={styles.headerCell}>Valor Total (R$)</Text>
-                </View>
-
-                <View style={styles.row}>
-                  <Text style={[styles.cell, { flex: 2 }]}>Lâmina ({door.laminaTransvision ? "Transvision" : "Lisa"})</Text>
-                  <Text style={styles.cell}>{door.area.toFixed(2)} m²</Text>
-                  <Text style={styles.cell}>{(door.priceLamina / door.area).toFixed(2)}</Text>
-                  <Text style={styles.cell}>{(door.priceLamina ?? 0).toFixed(2)}</Text>
-                </View>
-
-                <View style={styles.row}>
-                  <Text style={[styles.cell, { flex: 2 }]}>Guia</Text>
-                  <Text style={styles.cell}>{(door.height * 2).toFixed(2)} m</Text>
-                  <Text style={styles.cell}>{(door.priceGuia ?? 0).toFixed(2)}</Text>
-                  <Text style={styles.cell}>
-                    {(door.height * 2 * (door.priceGuia ?? 0)).toFixed(2)}
-                  </Text>
-                </View>
-
-                <View style={styles.row}>
-                  <Text style={[styles.cell, { flex: 2 }]}>Soleira</Text>
-                  <Text style={styles.cell}>{door.width.toFixed(2)} m</Text>
-                  <Text style={styles.cell}>{(door.priceSoleira ?? 0).toFixed(2)}</Text>
-                  <Text style={styles.cell}>
-                    {(door.width * (door.priceSoleira ?? 0)).toFixed(2)}
-                  </Text>
-                </View>
-
-                <View style={styles.row}>
-                  <Text style={[styles.cell, { flex: 2 }]}>Eixo</Text>
-                  <Text style={styles.cell}>{door.width.toFixed(2)} m</Text>
-                  <Text style={styles.cell}>{(door.priceEixo ?? 0).toFixed(2)}</Text>
-                  <Text style={styles.cell}>
-                    {(door.width * (door.priceEixo ?? 0)).toFixed(2)}
-                  </Text>
-                </View>
-
-                <View style={styles.row}>
-                  <Text style={[styles.cell, { flex: 2 }]}>
-                    Motor ({door.motor}) {door.engine ? `(${door.engine})` : ""}
-                  </Text>
-                  <Text style={styles.cell}>{door.quantity}</Text>
-                  <Text style={styles.cell}>{(door.motorPrice ?? 0).toFixed(2)}</Text>
-                  <Text style={styles.cell}>{(door.motorPrice ?? 0).toFixed(2)}</Text>
-                </View>
-
-                <View style={[styles.row, styles.footerRow]}>
-                  <Text style={[styles.cell, { flex: 2, fontWeight: "bold" }]}>
-                    Total da Porta
-                  </Text>
-                  <Text style={styles.cell}></Text>
-                  <Text style={styles.cell}></Text>
-                  <Text style={[styles.cell, { fontWeight: "bold" }]}>
-                    R$ {door.total.toFixed(2)}
-                  </Text>
-                </View>
-              </View>
-            )}
+            </>
+          )}
+          {/* Totais */}
+          <Text style={styles.total}>Total do Orçamento: R$ {totalGeral.toFixed(2)}</Text>
+          {discount > 0 && (
+            <Text style={styles.total}>
+              Total à vista com {discount}% de desconto: R$ {totalComDesconto.toFixed(2)}
+            </Text>
+          )}
+          {/*Campo de Assinatura */}
+          <View style={styles.signatureDiv}>
+            <Text style={styles.signatureText}>
+              Atencionamente: S7 Portas Automáticas
+            </Text>
           </View>
-        ))}
+        </View>
 
-        {/* Produtos adicionais */}
-        {extraProducts.length > 0 && (
-          <>
-            <Text style={styles.sectionTitle}>Produtos Adicionais</Text>
-            <View style={styles.table}>
-              <View style={[styles.row, styles.headerRow]}>
-                <Text style={[styles.headerCell, { flex: 2 }]}>Produto</Text>
-                <Text style={styles.headerCell}>Qtd</Text>
-                <Text style={styles.headerCell}>Valor Unitário (R$)</Text>
-                <Text style={styles.headerCell}>Valor Total (R$)</Text>
-              </View>
-              {extraProducts.map((p, idx) => (
-                <View style={styles.row} key={idx}>
-                  <Text style={[styles.cell, { flex: 2 }]}>{p.name}</Text>
-                  <Text style={styles.cell}>{p.quantity}</Text>
-                  <Text style={styles.cell}>{p.unitPrice.toFixed(2)}</Text>
-                  <Text style={styles.cell}>{p.total.toFixed(2)}</Text>
-                </View>
-              ))}
-            </View>
-          </>
-        )}
-
-        {/* Totais */}
-        <Text style={styles.total}>Total do Orçamento: R$ {totalGeral.toFixed(2)}</Text>
-        {discount > 0 && (
-          <Text style={styles.total}>
-            Total à vista com {discount}% de desconto: R$ {totalComDesconto.toFixed(2)}
+         {/*Footer estilizado */}
+        <View style={styles.footerStylish}>
+          <Text style={styles.footerText}>
+            Desenvolvido por @SanchezDev.Oficial
           </Text>
-        )}
-
+        </View>
       </Page>
     </Document>
   );

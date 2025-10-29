@@ -110,7 +110,7 @@ export default function Calculator() {
                   <p><span className=" font-bold">Área:</span> {d.area.toFixed(2)} m²</p>
                   <p><span className=" font-bold">Motor:</span> {d.motor}</p>
                   <p><span className=" font-bold">Valor do motor:</span> R$ {d.motorPrice}</p>
-                  <p><span className=" font-bold">Peso Estimado:</span> {d.pesoMotor}Kg</p>
+                  <p><span className=" font-bold">Peso Estimado:</span> {d.pesoMotor.toFixed(2)}Kg</p>
                   <p><span className=" font-bold">Total: </span> R$ {d.total.toFixed(2)}</p>
                 </div>
 
