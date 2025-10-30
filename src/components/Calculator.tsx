@@ -86,39 +86,43 @@ export default function Calculator() {
       <DoorRegistration onSubmit={handleAddDoor} />
 
       {/* Cadastro de produtos extras */}
-      <div className="bg-white p-6 rounded shadow-md max-w-md mx-auto mb-4 flex flex-col justify-center">
-        <h2 className="text-xl mb-4 font-medium">Adicionar Outros Produtos</h2>
-        <ExtraProductForm onSubmit={handleAddExtraProduct} doors={doors} />
+      <div className="bg-gray-900 text-white p-6 rounded-2xl shadow-md shadow-blue-900/30 max-w-3xl mx-auto mb-6 border border-blue-800/40">
+        <h2 className="text-2xl mb-4 font-semibold text-orange-400 text-center tracking-wide">
+          Adicionar Outros Produtos
+        </h2>
+
+        <div className="mt-2">
+          <ExtraProductForm onSubmit={handleAddExtraProduct} doors={doors} />
+        </div>
       </div>
 
       {/* Lista de portas */}
       {doors.length > 0 && (
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">Portas adicionadas:</h2>
-          <div className="space-y-2">
+        <div className="mt-8 max-w-4xl mx-auto bg-gray-950 p-6 rounded-2xl border border-blue-900/30 shadow-md shadow-blue-800/20">
+          <h2 className="text-2xl font-semibold text-orange-400 mb-4 text-center">
+            Portas Adicionadas
+          </h2>
+
+          <div className="space-y-4">
             {doors.map((d, index) => (
               <div
                 key={index}
-                className="p-4 border rounded flex justify-between items-start"
+                className="bg-gray-800 p-4 rounded-xl border border-gray-700 flex justify-between items-start hover:border-blue-700 transition-all"
               >
-                <div>
-                  <p><span className=" font-bold">Tipo:</span>  
-                    {d.productType === "kitSerralheiro" ? " Kit Serralheiro" : " Kit Instalado"} - {d.laminaTransvision ? "Lâmina Transvision" : "Lâmina Tradicional"}
-                  </p>
-                  <p>
-                    <span className=" font-bold">Dimensões:</span> {d.width} x {d.height}
-                  </p>
-                  <p><span className=" font-bold">Quantidade:</span> {d.quantity}</p>
-                  <p><span className=" font-bold">Área:</span> {d.area.toFixed(2)} m²</p>
-                  <p><span className=" font-bold">Motor:</span> {d.motor}</p>
-                  <p><span className=" font-bold">Valor do motor:</span> R$ {d.motorPrice}</p>
-                  <p><span className=" font-bold">Peso Estimado:</span> {d.pesoMotor.toFixed(2)}Kg</p>
-                  <p><span className=" font-bold">Total: </span> R$ {d.total.toFixed(2)}</p>
+                <div className="text-sm space-y-1">
+                  <p><span className="font-bold text-blue-400">Tipo:</span> {d.productType === "kitSerralheiro" ? "Kit Serralheiro" : "Kit Instalado"} - {d.laminaTransvision ? "Lâmina Transvision" : "Lâmina Tradicional"}</p>
+                  <p><span className="font-bold text-blue-400">Dimensões:</span> {d.width}m × {d.height}m</p>
+                  <p><span className="font-bold text-blue-400">Quantidade:</span> {d.quantity}</p>
+                  <p><span className="font-bold text-blue-400">Área:</span> {d.area.toFixed(2)} m²</p>
+                  <p><span className="font-bold text-blue-400">Motor:</span> {d.motor}</p>
+                  <p><span className="font-bold text-blue-400">Valor do Motor:</span> R$ {d.motorPrice}</p>
+                  <p><span className="font-bold text-blue-400">Peso Estimado:</span> {d.pesoMotor.toFixed(2)} kg</p>
+                  <p className="font-bold text-orange-400 text-lg mt-2">Total: R$ {d.total.toFixed(2)}</p>
                 </div>
 
                 <button
                   onClick={() => handleRemoveDoor(index)}
-                  className="ml-4 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                  className="ml-4 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors"
                 >
                   Remover
                 </button>
@@ -130,26 +134,27 @@ export default function Calculator() {
 
       {/* Lista de produtos extras */}
       {extraProducts.length > 0 && (
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">
-            Outros Produtos adicionados:
+        <div className="mt-8 max-w-3xl mx-auto bg-gray-950 p-6 rounded-2xl border border-orange-700/40 shadow-md shadow-orange-900/30">
+          <h2 className="text-2xl font-semibold text-orange-400 mb-4 text-center">
+            Outros Produtos Adicionados
           </h2>
-          <div className="space-y-2">
+
+          <div className="space-y-4">
             {extraProducts.map((p, index) => (
               <div
                 key={index}
-                className="p-4 border rounded flex justify-between items-start"
+                className="bg-gray-800 p-4 rounded-xl border border-gray-700 flex justify-between items-start hover:border-orange-600 transition-all"
               >
-                <div>
-                  <p>Produto: {p.name}</p>
-                  <p>Quantidade: {p.quantity}</p>
-                  <p>Valor Unitário: R$ {p.unitPrice.toFixed(2)}</p>
-                  <p>Total: R$ {p.total.toFixed(2)}</p>
+                <div className="text-sm space-y-1">
+                  <p><span className="font-bold text-blue-400">Produto:</span> {p.name}</p>
+                  <p><span className="font-bold text-blue-400">Quantidade:</span> {p.quantity}</p>
+                  <p><span className="font-bold text-blue-400">Valor Unitário:</span> R$ {p.unitPrice.toFixed(2)}</p>
+                  <p className="font-bold text-orange-400 text-lg mt-2">Total: R$ {p.total.toFixed(2)}</p>
                 </div>
 
                 <button
                   onClick={() => handleRemoveExtraProduct(index)}
-                  className="ml-4 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                  className="ml-4 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors"
                 >
                   Remover
                 </button>
@@ -160,22 +165,26 @@ export default function Calculator() {
       )}
 
       {/* Totais e desconto */}
-      <div className="mt-6 p-4 border-t">
-        <div className="font-bold text-lg">
-          Total geral: R$ {totalGeral.toFixed(2)}
+      <div className="mt-8 max-w-3xl mx-auto bg-gray-900 p-6 rounded-2xl shadow-inner border-t border-blue-700/30">
+        <div className="font-bold text-2xl text-orange-400 text-center">
+          Total Geral: R$ {totalGeral.toFixed(2)}
         </div>
-        <div className="mt-4">
-          <label className="block mb-1">Desconto (% para pagamento à vista)</label>
+
+        <div className="mt-6 text-center">
+          <label className="block mb-2 text-blue-400 font-medium">
+            Desconto (% para pagamento à vista)
+          </label>
           <input
             type="number"
             value={discount}
             onChange={(e) => setDiscount(Number(e.target.value))}
-            className="border rounded px-3 py-2 w-24"
+            className="border border-blue-700 rounded px-3 py-2 w-24 text-center bg-gray-800 text-white"
             placeholder="0"
           />
         </div>
+
         {discount > 0 && (
-          <div className="mt-2 text-green-700 font-semibold">
+          <div className="mt-4 text-green-400 text-lg font-semibold text-center">
             Total com desconto: R$ {totalComDesconto.toFixed(2)}
           </div>
         )}
@@ -183,10 +192,10 @@ export default function Calculator() {
 
       {/* Botão para abrir prévia */}
       {(doors.length > 0 || extraProducts.length > 0) && (
-        <div className="mt-6 text-center">
+        <div className="mt-8 text-center">
           <button
             onClick={() => setShowPreview(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow"
+            className="bg-gradient-to-r from-orange-500 to-blue-700 hover:opacity-90 text-white px-8 py-3 rounded-xl text-lg font-semibold shadow-md shadow-blue-900/40 transition-all"
           >
             {window.innerWidth >= 768
               ? "Visualizar e Baixar Orçamento (PDF)"
@@ -194,6 +203,7 @@ export default function Calculator() {
           </button>
         </div>
       )}
+
 
       {/* Prévia em PDF */}
       <BudgetPreview
@@ -238,51 +248,55 @@ function ExtraProductForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 bg-gray-800 p-6 rounded-xl shadow-lg shadow-blue-900/30 text-white border border-blue-800/30"
+    >
       <div>
-        <label className="block mb-1">Produto</label>
+        <label className="block mb-1 text-sm text-gray-300">Produto</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="border rounded px-3 py-2 w-full"
+          className="bg-gray-900 border border-gray-700 rounded px-3 py-2 w-full text-white focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none transition-all"
           placeholder="Nome do produto"
         />
       </div>
 
-      <div className="flex gap-2">
-        <div>
-          <label className="block mb-1">Quantidade</label>
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <label className="block mb-1 text-sm text-gray-300">Quantidade</label>
           <input
             type="number"
             value={quantity}
             onChange={(e) => setQuantity(Number(e.target.value))}
-            className="border rounded px-3 py-2 w-24"
+            className="bg-gray-900 border border-gray-700 rounded px-3 py-2 w-full text-white focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none transition-all"
           />
         </div>
-        <div>
-          <label className="block mb-1">Valor Unitário (R$)</label>
+
+        <div className="flex-1">
+          <label className="block mb-1 text-sm text-gray-300">Valor Unitário (R$)</label>
           <input
             type="number"
+            step="0.01"
             value={unitPrice}
             onChange={(e) => setUnitPrice(Number(e.target.value))}
-            className="border rounded px-3 py-2 w-32"
-            step="0.01"
+            className="bg-gray-900 border border-gray-700 rounded px-3 py-2 w-full text-white focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none transition-all"
           />
         </div>
       </div>
 
       <div>
-        <label className="block mb-1">Associar a porta (opcional)</label>
+        <label className="block mb-1 text-sm text-gray-300">Associar a porta (opcional)</label>
         <select
           value={attachedTo}
           onChange={(e) => setAttachedTo(e.target.value)}
-          className="border rounded px-3 py-2 w-full"
+          className="bg-gray-900 border border-gray-700 rounded px-3 py-2 w-full text-white focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none transition-all"
         >
           <option value="general">Orçamento geral / sem associação</option>
           {doors.map((d, idx) => (
             <option key={idx} value={String(idx)}>
-              {`Porta ${idx + 1} — ${d.productType} — ${d.width}x${d.height}`}
+              {`Porta ${idx + 1} — ${d.productType === "kitSerralheiro" ? "Kit Serralheiro" : "Kit Instalado"} — ${d.width}x${d.height}`}
             </option>
           ))}
         </select>
@@ -290,10 +304,11 @@ function ExtraProductForm({
 
       <button
         type="submit"
-        className="mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+        className="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition-all"
       >
         Adicionar Produto
       </button>
     </form>
+
   );
 }

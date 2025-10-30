@@ -59,9 +59,9 @@ export default function BudgetPreview({
 
   return (
     <Modal onClose={onClose}>
-      <div className="flex flex-col items-center w-full max-w-full p-2">
+      <div className="flex flex-col items-center w-full max-w-full bg-gray-900">
         {/* PDF responsivo */}
-        <div className="w-full flex justify-center">
+        <div className="w-full flex justify-center ">
           {window.innerWidth >= 768 ? (
             <PDFViewer style={{ width: "100%", maxWidth: "100%", height: "80vh", minHeight: "350px" }}>
               <BudgetPDF
@@ -76,7 +76,7 @@ export default function BudgetPreview({
               />
             </PDFViewer>
           ) : (
-            <p className="text-center text-sm p-4">
+            <p className="text-center text-sm text-white p-4">
               Seu orçamento está pronto! Clique no botão abaixo para baixar o PDF.
             </p>
           )}
@@ -85,7 +85,7 @@ export default function BudgetPreview({
         {/* Botão de download */}
         <button
           onClick={handleDownload}
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          className="mt-4 px-4 py-2 bg-gradient-to-r from-[#002b5c] to-[#ff6600] text-white  rounded hover:bg-gradient-to-r hover:from-[#001d3d] hover:to-[#c24e01]"
         >
           Baixar PDF
         </button>

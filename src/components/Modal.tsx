@@ -24,7 +24,7 @@ export default function Modal({ children, onClose }: ModalProps) {
         Fechar
       </button>
 
-      <div className="bg-white rounded-xl shadow-lg max-h-[95vh] w-full max-w-[90%] overflow-auto p-4">
+      <div className="bg-gray-900 border border-blue-800/40 shadow-blue-400 rounded-xl shadow-sm max-h-[95vh] w-full max-w-[90%] overflow-auto p-4">
         {children}
       </div>
     </div>
