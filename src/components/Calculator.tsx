@@ -59,12 +59,14 @@ export default function Calculator() {
     <div className="p-6 max-w-3xl mx-auto">
       {/* Título */}
       <div className="text-center mx-auto py-6 w-full">
-        <h1 className="text-2xl font-bold text-blue-700">Dados do Orçamento</h1>
+        <h1 className="text-4xl font-bold text-gray-100">Dados do Orçamento</h1>
       </div>
 
       {/* Nome do Cliente */}
-      <div className="bg-white p-6 rounded shadow-md max-w-md mx-auto mb-4 flex flex-col justify-center">
-        <h2 className="text-xl mb-4 font-medium">Informações do Cliente</h2>
+      <div className="bg-gray-900 text-gray-300 p-6 rounded-2xl shadow-lg shadow-blue-900/40 max-w-md mx-auto mb-6 border border-gray-500/10">
+        <h2 className="text-2xl mb-4 font-semibold text-center text-orange-400 tracking-wide">
+          Informações do Cliente
+        </h2>
         <div className="w-full max-w-md">
           <label className="block mb-1" htmlFor="clientName">
             Nome:
@@ -74,7 +76,7 @@ export default function Calculator() {
             type="text"
             value={clientName}
             onChange={(e) => setClientName(e.target.value)}
-            className="border rounded px-3 py-2 w-full"
+            className="w-full px-3 py-2 rounded bg-gray-800 border border-blue-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
             placeholder="Digite o nome do cliente"
           />
         </div>
