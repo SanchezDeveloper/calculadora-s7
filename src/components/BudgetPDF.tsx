@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
+    alignItems: "center",
     backgroundColor: "#1f1d21", 
     padding: 12,
     borderRadius: 6,
@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+    alignItems: 'center',
     borderBottomWidth: 1,
     borderColor: '#000',
   },
@@ -123,9 +124,8 @@ const styles = StyleSheet.create({
     padding: 2,
     textAlign: 'center',
   },
-
   total: {
-    marginTop: 12,
+    marginVertical: 12,
     textAlign: "right",
     fontSize: 12,
     fontWeight: "bold",
@@ -224,12 +224,10 @@ export default function BudgetPDF({
               <Text style={styles.sectionTitle}>
                 0{door.quantity} un. -{" "}
                 {door.productType === "kitSerralheiro" ? "Kit Serralheiro" : "Kit Instalado"}
-                {door.productType === "kitSerralheiro" && (
-                  <Text style={styles.sectionSubtitle}>
-                    {" "} | Medidas: {door.height.toFixed(2)}m x {door.width.toFixed(2)}m | Área:{" "}
-                    {door.area.toFixed(3)}m²
-                  </Text>
-                )}
+                <Text style={styles.sectionSubtitle}>
+                  {" "} | Medidas: {door.height.toFixed(2)}m x {door.width.toFixed(2)}m | Área do vão:{" "}
+                  {door.area.toFixed(2)}m²
+                </Text>
               </Text>
               {/* --- KIT INSTALADO --- */}
               {door.productType === "kitInstalado" ? (
@@ -241,7 +239,10 @@ export default function BudgetPDF({
                     <Text style={styles.headerCell}>Valor Total (R$)</Text>
                   </View>
                   <View style={styles.row}>
-                    <Text style={styles.cell}>Porta de Enrolar Automática</Text>
+                    <Text style={styles.cell}>
+                      <Text>Porta de Enrolar Aut. - </Text>
+                      <Text> com instalação - Motor de {door.motor}Kg ({door.motor?.toLowerCase().startsWith("ac") ? "s/ NoBreak" : "c/ NoBreak"})</Text>
+                    </Text>
                     <Text style={styles.cell}>{door.quantity}</Text>
                     <Text style={styles.cell}>{(door.total / door.quantity).toFixed(2)}</Text>
                     <Text style={styles.cell}>{door.total.toFixed(2)}</Text>
@@ -338,6 +339,46 @@ export default function BudgetPDF({
               Total à vista com {discount}% de desconto: R$ {totalComDesconto.toFixed(2)}
             </Text>
           )}
+          {/* Campo de descrição */}
+          <View style={styles.table}>
+            <View style={[styles.row, styles.headerRow]}>
+              <Text style={styles.headerCell}>Descrição</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.cell}>
+                {(() => {
+                  const totalPortas = doors.reduce((acc, d) => acc + d.quantity, 0);
+
+                  const temKitSerralheiro = doors.some(d => d.productType === "kitSerralheiro");
+                  const temKitInstalado = doors.some(d => d.productType === "kitInstalado");
+
+                  // Monta lista de materiais extras, se existirem
+                  const extrasDescricao =
+                    extraProducts.length > 0
+                      ? ` Materiais adicionais incluídos: ${extraProducts
+                          .map(p => `${p.quantity}x ${p.name}`)
+                          .join(", ")}.`
+                      : "";
+
+                  if (temKitSerralheiro && !temKitInstalado) {
+                    return `Fabricação de ${totalPortas} porta${totalPortas > 1 ? "s" : ""} — todas contendo tubo, lâminas, guias, soleira e motor.${extrasDescricao} Garantia de 1 ano dos motores.`;
+                  }
+
+                  if (temKitInstalado && !temKitSerralheiro) {
+                    return `Fabricação e instalação de ${totalPortas} porta${totalPortas > 1 ? "s" : ""} — todas contendo tubo, lâminas, guias, soleira e motores.${extrasDescricao} Garantia de 1 ano do motor e da instalação.`;
+                  }
+
+                  if (temKitSerralheiro && temKitInstalado) {
+                    return `Fabricação e/ou instalação de ${totalPortas} porta${totalPortas > 1 ? "s" : ""} — contendo tubo, lâminas, guias, soleira e motores.${extrasDescricao} Garantia de 1 ano conforme o tipo de kit.`;
+                  }
+
+                  return "Nenhuma porta cadastrada.";
+                })()}
+              </Text>
+            </View>
+          </View>
+
+
           {/*Campo de Assinatura */}
           <View style={styles.signatureDiv}>
             <Text style={styles.signatureText}>
@@ -346,12 +387,13 @@ export default function BudgetPDF({
           </View>
         </View>
 
-         {/*Footer estilizado */}
-        <View style={styles.footerStylish}>
-          <Text style={styles.footerText}>
-            Desenvolvido por @SanchezDev.Oficial
-          </Text>
-        </View>
+          {/*Footer estilizado */}
+          <View style={styles.footerStylish}>
+            <Text style={styles.footerText}>
+              Desenvolvido por @SanchezDev.Oficial
+            </Text>
+          </View>
+        
       </Page>
     </Document>
   );

@@ -50,7 +50,8 @@ export type CalculatedDoor =
       priceSoleira: number;
       priceEixo: number;
       priceLamina: number;
-      engine: string; // Se você usa engine no PDF
+      engine: string;
+      hasUps?: "semNB" | "comNB";
     }
   | {
       productType: "kitInstalado";
@@ -64,6 +65,7 @@ export type CalculatedDoor =
       height: number;
       quantity: number;
       laminaTransvision?: boolean;
+      hasUps?: "semNB" | "comNB";
     };
 
 export type BudgetData = {

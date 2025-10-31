@@ -109,7 +109,7 @@ export default function Calculator() {
                 key={index}
                 className="bg-gray-800 p-4 rounded-xl border border-gray-700 flex justify-between items-start hover:border-blue-700 transition-all"
               >
-                <div className="text-sm space-y-1">
+                <div className="text-sm space-y-1 text-gray-100">
                   <p><span className="font-bold text-blue-400">Tipo:</span> {d.productType === "kitSerralheiro" ? "Kit Serralheiro" : "Kit Instalado"} - {d.laminaTransvision ? "Lâmina Transvision" : "Lâmina Tradicional"}</p>
                   <p><span className="font-bold text-blue-400">Dimensões:</span> {d.width}m × {d.height}m</p>
                   <p><span className="font-bold text-blue-400">Quantidade:</span> {d.quantity}</p>
