@@ -10,6 +10,7 @@ import company from "../data/company.json";
 interface BudgetPreviewProps {
   doors: CalculatedDoor[];
   extraProducts: ExtraProduct[]; 
+  sellerName: string;
   clientName: string;
   discount: number; 
   open: boolean;
@@ -19,6 +20,7 @@ interface BudgetPreviewProps {
 export default function BudgetPreview({
   doors,
   extraProducts,
+  sellerName,
   clientName,
   discount,
   open,
@@ -38,6 +40,7 @@ export default function BudgetPreview({
       <BudgetPDF
         doors={doors}
         extraProducts={extraProducts} 
+        sellerName={sellerName}
         clientName={clientName}
         company={company}
         totalGeral={totalGeral}
@@ -66,7 +69,8 @@ export default function BudgetPreview({
             <PDFViewer style={{ width: "100%", maxWidth: "100%", height: "80vh", minHeight: "350px" }}>
               <BudgetPDF
                 doors={doors}
-                extraProducts={extraProducts} 
+                extraProducts={extraProducts}
+                sellerName={sellerName} 
                 clientName={clientName}
                 company={company}
                 totalGeral={totalGeral}

@@ -69,6 +69,7 @@ export type CalculatedDoor =
     };
 
 export type BudgetData = {
+  sellerName: string;
   clientName: string;
   date: string;
   doors: CalculatedDoor[];

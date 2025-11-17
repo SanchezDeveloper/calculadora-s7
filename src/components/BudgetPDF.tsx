@@ -6,6 +6,7 @@ import { ExtraProduct } from "@/utils/types/ExtraProduct";
 interface BudgetPDFProps {
   doors: CalculatedDoor[];
   extraProducts: ExtraProduct[];
+  sellerName: string;
   clientName: string;
   company: {
     name: string;
@@ -175,6 +176,7 @@ const styles = StyleSheet.create({
 export default function BudgetPDF({
   doors,
   extraProducts,
+  sellerName,
   clientName,
   company,
   totalGeral,
@@ -210,8 +212,13 @@ export default function BudgetPDF({
           {/* Dados do cliente */}
           <View style={styles.clientInfo}>
             <Text style={styles.clientText}>
+              <Text style={styles.bold}>Vendedor:</Text> {sellerName}
+            </Text> 
+            <Text>|</Text>
+            <Text style={styles.clientText}>
               <Text style={styles.bold}>Cliente:</Text> {clientName}
             </Text>
+            <Text>|</Text>
             <Text style={styles.clientText}>
               <Text style={styles.bold}>Data:</Text> {dataHoje}
             </Text>
